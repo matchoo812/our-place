@@ -16,7 +16,8 @@
       </p>
 
       <div class="body-content">
-        {{$post->body}}
+        {{-- allow HTML interpretation for markdown interpreter --}}
+        {!! $post->body !!}
       </div>
     </div>
 
