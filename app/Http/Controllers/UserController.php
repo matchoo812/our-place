@@ -16,10 +16,10 @@ class UserController extends Controller
             'password' => ['required', 'min:9', 'confirmed']
         ]);
 
-        // $incomingFields['password'] = bcrpyt($incomingFields['password']);
+        $user = User::create($incomingFields);
+        auth()->login($user);
 
-        User::create($incomingFields);
-        return 'User registered!';
+        return redirect('/')->with('success', 'Thanks for registering!');
     }
 
     public function login(Request $request)
@@ -31,9 +31,9 @@ class UserController extends Controller
 
         if (auth()->attempt(['username' => $incomingFields['loginusername'], 'password' => $incomingFields['loginpassword']])) {
             $request->session()->regenerate();
-            return 'You did it!';
+            return redirect('/')->with('success', 'You have successfully logged in.');
         } else {
-            return 'Hacker alert! weeoooweeoooweooo!';
+            return redirect('/')->with('failure', 'Invalid login credentials');
         }
     }
 
@@ -44,5 +44,11 @@ class UserController extends Controller
         } else {
             return view('homepage');
         }
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+        return redirect('/')->with('success', 'You are now logged out.');
     }
 }
