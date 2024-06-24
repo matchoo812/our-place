@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,5 +16,6 @@ use App\Http\Controllers\RouteController;
 */
 
 Route::get('/', [RouteController::class, "homepage"]);
-
 Route::get('/about', [RouteController::class, "aboutPage"]);
+
+Route::post('/register', [UserController::class, "register"]);
