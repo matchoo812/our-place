@@ -11,4 +11,9 @@ class Post extends Model
 
     // allow properties to be filled directly from array in Post::create method
     protected $fillable = ['title', 'body', 'user_id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
