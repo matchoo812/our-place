@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class UserController extends Controller
 {
     public function profile(User $user)
     {
 
-        return view('profile-posts', ['username' => $user->username, 'posts' => $user->posts()->latest()->get(), 'postCount' => $user->posts()->count()]);
+        return view('profile-posts', ['username' => $user->username, 'avatar' => $user->avatar, 'posts' => $user->posts()->latest()->get(), 'postCount' => $user->posts()->count()]);
     }
     public function register(Request $request)
     {
@@ -49,6 +52,37 @@ class UserController extends Controller
         } else {
             return view('homepage');
         }
+    }
+
+    public function showAvatarForm()
+    {
+        return view('avatar-form');
+    }
+
+    public function storeAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|max:3000'
+        ]);
+        $user = auth()->user();
+
+        $filename = $user->id . "-" . $user->username . "-" . uniqid() . ".jpg";
+
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($request->file('avatar'));
+        $imgData = $image->cover(150, 150)->toJpeg();
+        Storage::put("public/avatars/{$filename}", $imgData);
+
+        // wait for new avatar to be saved in db before deleting old one
+        $oldAvatar = $user->avatar;
+        $user->avatar = $filename;
+        $user->save();
+
+        if ($oldAvatar != "/fallback-avatar.jpg") {
+            Storage::delete(str_replace("/storage/", "public/", $oldAvatar));
+        }
+
+        return redirect("/profile/{$user->username}")->with('success', 'Avatar successfully changed.');
     }
 
     public function logout()
