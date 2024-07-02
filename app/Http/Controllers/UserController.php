@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Follow;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Intervention\Image\ImageManager;
@@ -13,8 +14,13 @@ class UserController extends Controller
 {
     public function profile(User $user)
     {
+        $isFollowing = 0;
 
-        return view('profile-posts', ['username' => $user->username, 'avatar' => $user->avatar, 'posts' => $user->posts()->latest()->get(), 'postCount' => $user->posts()->count()]);
+        if (auth()->check()) {
+            $isFollowing = Follow::where([['user_id', '=',  auth()->user()->id], ['followed_user', '=', $user->id]])->count();
+        }
+
+        return view('profile-posts', ['username' => $user->username, 'avatar' => $user->avatar, 'posts' => $user->posts()->latest()->get(), 'postCount' => $user->posts()->count(), 'isFollowing' => $isFollowing]);
     }
     public function register(Request $request)
     {
