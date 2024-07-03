@@ -57,4 +57,12 @@ class User extends Authenticatable
         // define relationship between user and posts
         return $this->hasMany(Post::class, 'user_id');
     }
+    public function followers()
+    {
+        return $this->hasMany(Follow::class, 'followed_user');
+    }
+    public function following()
+    {
+        return $this->hasMany(Follow::class, 'user_id');
+    }
 }
