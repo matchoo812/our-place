@@ -5,11 +5,12 @@
 
     <h2 class="text-center mb-4">The Latest from People You Follow </h2>
     @foreach ($posts as $post)
-    <a href="/post/{{$post->id}}" class="list-group-item list-group-item-action">
-      <img class="avatar-tiny" src="{{$post->user->avatar}}" />
-      <strong>{{$post->title}}</strong> <span class="text-muted small">by {{$post->user->username}}</span> on {{$post->created_at->format('n/j/Y')}}
-    </a>
+      <x-post :post="$post" />
     @endforeach
+
+    <div class="mt-2">
+      {{$posts->links()}}
+    </div>
 
     @else 
     <div class="text-center">

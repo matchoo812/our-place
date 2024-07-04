@@ -51,7 +51,14 @@ class PostController extends Controller
         $incomingFields['body'] = strip_tags($incomingFields['body']);
 
         $post->update($incomingFields);
-        return back()->with('success', 'Post successfully updated.');
+        return redirect("/post/{$post->id}")->with('success', 'Post successfully updated.');
+    }
+
+    public function search($term)
+    {
+        $posts = Post::search($term)->get();
+        $posts->load('user:id,username,avatar');
+        return $posts;
     }
 
     public function delete(Post $post)

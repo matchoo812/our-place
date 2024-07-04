@@ -1,4 +1,4 @@
-<x-profile :profileData="$profileData">
+<x-profile :profileData="$profileData" doctitle="Who {{$profileData['username']}} Follows">
       
     @foreach ($following as $follow)
     <a href="/profile/{{$follow->followedUser->username}}" class="list-group-item list-group-item-action">
