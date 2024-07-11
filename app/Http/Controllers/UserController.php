@@ -29,15 +29,27 @@ class UserController extends Controller
         $this->getProfileData($user);
         return view('profile-posts', ['posts' => $user->posts()->latest()->get()]);
     }
+    public function profileRaw(User $user)
+    {
+        return response()->json(['theHTML' => view('profile-posts-only', ['posts' => $user->posts()->latest()->get()])->render(), 'docTitle' => $user->username . "'s profile"]);
+    }
     public function profileFollowers(User $user)
     {
         $this->getProfileData($user);
         return view('profile-followers', ['followers' => $user->followers()->get()]);
     }
+    public function profileFollowersRaw(User $user)
+    {
+        return response()->json(['theHTML' => view('profile-followers-only', ['followers' => $user->followers()->get()])->render(), 'docTitle' => $user->username . "'s followers"]);
+    }
     public function profileFollowing(User $user)
     {
         $this->getProfileData($user);
         return view('profile-following', ['following' => $user->following()->get()]);
+    }
+    public function profileFollowingRaw(User $user)
+    {
+        return response()->json(['theHTML' => view('profile-following-only', ['following' => $user->following()->latest()->get()])->render(), 'docTitle' => 'People ' . $user->username . " is following"]);
     }
     public function register(Request $request)
     {
